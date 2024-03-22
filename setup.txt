@@ -1,0 +1,62 @@
+Here's a step-by-step guide to setting up a simple network topology in Cisco Packet Tracer with a router, switch, and two PCs. Additionally, I'll include the configuration commands with explanations for setting up SSH access on the router.
+
+### Step 1: Create the Network Topology
+1. Open Cisco Packet Tracer.
+2. Drag and drop the following devices from the "Network Devices" pane:
+   - 1 Router (e.g., ISR 4321)
+   - 1 Switch (e.g., 2960)
+   - 2 PCs (e.g., Generic PC)
+
+### Step 2: Connect Devices
+1. Connect the router's GigabitEthernet port (e.g., GigabitEthernet0/0) to the switch's FastEthernet port using an Ethernet cable.
+2. Connect each PC to the switch's FastEthernet ports using Ethernet cables.
+
+### Step 3: Configure Router
+```bash
+Router> enable
+Router# configure terminal
+Router(config)# hostname mainrouter
+mainrouter(config)# ip domain-name example.com
+mainrouter(config)# crypto key generate rsa
+mainrouter(config)# username admin privilege 15 secret cisco123
+mainrouter(config)# line vty 0 4
+mainrouter(config-line)# transport input ssh
+mainrouter(config-line)# login local
+mainrouter(config-line)# exit
+mainrouter(config)# interface GigabitEthernet0/0
+mainrouter(config-if)# ip address 192.168.1.1 255.255.255.0
+mainrouter(config-if)# no shutdown
+mainrouter(config-if)# exit
+mainrouter(config)# exit
+mainrouter# copy running-config startup-config
+```
+### Configuration Explanation:
+- `hostname mainrouter`: Sets the router's hostname to "mainrouter".
+- `ip domain-name example.com`: Sets the domain name to "example.com" (replace with your actual domain).
+- `crypto key generate rsa`: Generates RSA keys for SSH.
+- `username admin privilege 15 secret cisco123`: Creates a local user "admin" with privilege level 15 and sets the password to "cisco123".
+- `line vty 0 4`: Enters vty line configuration mode.
+- `transport input ssh`: Allows SSH access only.
+- `login local`: Enables local login authentication.
+- `interface GigabitEthernet0/0`: Enters interface configuration mode for the router's interface.
+- `ip address 192.168.1.1 255.255.255.0`: Assigns IP address and subnet mask to the router interface.
+- `no shutdown`: Activates the interface.
+
+### Step 4: Configure PCs
+1. Click on each PC and configure their IP addresses, subnet masks, and default gateways:
+   - PC1:
+     - IP Address: 192.168.1.2
+     - Subnet Mask: 255.255.255.0
+     - Default Gateway: 192.168.1.1
+   - PC2:
+     - IP Address: 192.168.1.3
+     - Subnet Mask: 255.255.255.0
+     - Default Gateway: 192.168.1.1
+
+### Step 5: Testing
+1. Open PuTTY on the main host.
+2. Enter the IP address of the router (192.168.1.1) and make sure the port is set to SSH (default is port 22).
+3. Click "Open" to establish the SSH connection.
+4. When prompted, enter the username and password configured on the router (e.g., admin/cisco123).
+
+With these steps, you should have a basic network setup with SSH access configured on the Cisco router, allowing you to remotely manage it using PuTTY or any other SSH client.
